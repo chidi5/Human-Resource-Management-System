@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+  {% block title %}
+  Payment
+  {% endblock %}
+
+  {% block style %}
+ 
+  {% endblock %}
+
+  {% block main %}
+  <script type="text/javascript">
+    $(document).ready(function () {
+        $('#checkBtn').click(function() {
+          checked = $("input[type=checkbox]:checked").length;
+
+          if(!checked) {
+            alert("You must check at least one checkbox.");
+            return false;
+          }
+
+        });
+    });
+
+  </script>
+
+  <script>
+    function isNumberKey(evt){
+    var charCode = (evt.which) ? evt.which : event.keyCode
+    if (charCode > 31 && (charCode < 48 || charCode > 57))
+        return false;
+    return true;
+    }
+
+  </script>
+
+  	<h1>Payment</h1>
+    {% if requests_rejected %}
+      <div class="alert alert-danger alert-dismissable">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+        <strong>Payment requests for Employee IDs {% for eid in requests_rejected %}{{eid}}, {% endfor %} have been cancelled</strong>
+      </div>
+    {% endif %}
+    <h3>Regularised Employees</h3>
+    
+    <form action="/make_payment/" onSubmit="return confirm('Are you sure you wish to proceed with the payment?');" method="POST">
+    {% csrf_token %}
+  	<table class="pure-table">
+    <thead>
+        <tr>
+            <th>Employee ID</th>
+            <th>Employee Name</th>
+            <th>Salary ID</th>
+            <th>Loan ID</th>
+            <th>Amount</th>
+            <th>Deductions</th>
+            <th>Pay</th>
+        </tr>
+    </thead>
+
+    <tbody>
+      {% for payment in payments %}
+        <tr>
+            <td>{{payment.EID}}</td>
+            <td>{{payment.Name}}</td>
+            <td>{{payment.SID}}</td>
+            <td>
+              {% if payment.LIDs %}
+              {% for LID in payment.LIDs %}
+                {{LID}}</br>
+              {% endfor %}
+              {% else %}
+              NA
+              {% endif %}
+            </td>
+            <td>Rs. {{payment.Final_Salary}}</td>
+            <td>Rs. <input type="number" name="{{payment.EID}}" max="{{payment.Final_Salary}}" min="0" step="1"/></td>
+            <td><center><input id="cb" name="pay" value="{{payment.EID}}" type="checkbox"></center></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+</table>
+<center><button type="submit" id="checkBtn" name="submit_regular" class="pure-button pure-button-primary">Confirm</button></center>
+</form>
+
+<h3>Contract Based Employees</h3>
+<form action="/make_payment/" onSubmit="return confirm('Are you sure you wish to proceed with the payment?');" method="POST">
+    {% csrf_token %}
+    <table class="pure-table">
+    <thead>
+        <tr>
+            <th>Employee ID</th>
+            <th>Employee Name</th>
+            <th>Contract ID</th>
+            <th>Amount</th>
+            <th>Deductions</th>
+            <th>Pay</th>
+        </tr>
+    </thead>
+
+    <tbody>
+      {% for payment in contract_payments %}
+        <tr>
+            <td>{{payment.EID}}</td>
+            <td>{{payment.Name}}</td>
+            <td>{{payment.CID}}</td>
+            <td>Rs. {{payment.Final_Salary}}</td>
+            <td>Rs. <input type="number" name="{{payment.EID}}" max="{{payment.Final_Salary}}" min="0" step="1"/></td>
+            <td><center><input id="cb" name="pay" value="{{payment.EID}}" type="checkbox"></center></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+</table>
+<center><button type="submit" id="checkBtn" name="submit_contract" class="pure-button pure-button-primary">Confirm</button></center>
+</form>
+
+	{% endblock %}
+
+{% block js %}
+{% endblock %}

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  	{% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+  <div class="login-card">
+    <h1>HRMS ULB, Haryana</h1><br>
+    {% if auth_fail %}
+    <div class="alert alert-danger alert-dismissable fade in">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    <strong>Invalid Credentials!</strong>
+  </div>
+  {% endif %}
+  <form action="/auth/" method="POST">
+    {% csrf_token %}
+    <input type="text" name="username" placeholder="Username" required>
+    <input type="password" name="password" placeholder="Password" required>
+    <input type="hidden" name="next" value={{next}}>
+    <input type="submit" name="login" class="login login-submit" value="Login">
+  </form>
+</div>
+  
+</body>
+</html>

@@ -1,0 +1,269 @@
+
+  {% extends 'base.html' %}
+
+  {% block title %}
+  Home
+  {% endblock %}
+
+  {% block main %}
+		 
+<center>
+<h1>Home</h1>
+<h3>Personal Details</h3>
+<table class="pure-table">
+    <thead>
+        <tr>
+            <th>Field</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+            <td>Employee ID</td>
+            <td>{{employee.EID}}</td>
+        </tr>
+
+        <tr>
+            <td>Name</td>
+            <td>{{employee.Name}}</td>
+        </tr>
+
+        <tr>
+            <td>Address</td>
+            <td>{{employee.Address}}</td>
+        </tr>
+
+        <tr>
+            <td>Age</td>
+            <td>{{employee.Age}}</td>
+        </tr>
+
+        <tr>
+            <td>Gender</td>
+            <td>{{employee.Gender}}</td>
+        </tr>
+
+        <tr>
+            <td>Phone Numbers</td>
+            <td>
+                {% for phone in employee_phone %}
+                    +91-{{phone}}</br>
+                {% endfor %}
+            </td>
+        </tr>
+
+        <tr>
+            <td>Aadhar No.</td>
+            <td>{{employee.Aadhar}}</td>
+        </tr>
+    </tbody>
+</table>
+
+{% if UserType.regularised %}
+<h3>Post Details</h3>
+<table class="pure-table">
+    <thead>
+        <tr>
+            <th>Field</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+            <td>Post ID</td>
+            <td>{{post.PID}}</td>
+        </tr>
+
+        <tr>
+            <td>Post</td>
+            <td>{{post.Name}}</td>
+        </tr>
+
+        <tr>
+            <td>Post Class</td>
+            <td>{{post.Class}}</td>
+        </tr>
+
+        <tr>
+            <td>ULB</td>
+            <td>{{post.ULB}}</td>
+        </tr>
+
+    </tbody>
+</table>
+{% endif %}
+
+{% if UserType.regularised %}
+<h3>Salary Details</h3>
+<table class="pure-table">
+    <thead>
+        <tr>
+            <th>Field</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+            <td>Base Pay</td>
+            <td>Rs. {{salary.Basic_Pay}}</td>
+        </tr>
+
+        <tr>
+            <td>Grade Pay</td>
+            <td>Rs. {{salary.Grade_Pay}}</td>
+        </tr>
+
+        <tr>
+            <td>Total Pay</td>
+            <td>Rs. {{salary.Total_Pay}}</td>
+        </tr>
+
+    </tbody>
+</table>
+{% endif %}
+
+{% if UserType.regularised %}
+{% if dependents %}
+<h3>Dependents</h3>
+    <table class="pure-table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Age</th>
+            <th>Gender</th>
+            <th>Relation</th>
+            <th>Aadhar No.</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for dependent in dependents %}
+        <tr>
+            <td>{{dependent.Name}}</td>
+            <td>{{dependent.Address}}</td>
+            <td>{{dependent.Age}}</td>
+            <td>{{dependent.Gender}}</td>
+            <td>{{dependent.Relation}}</td>
+            <td>{{dependent.Aadhar}}</td>
+        </tr>
+        {% endfor %}
+
+    </tbody>
+</table>
+{% endif %}
+{% endif %}
+
+{% if UserType.regularised %}
+{% if charges %}
+<h3>Charges</h3>
+    <table class="pure-table">
+    <thead>
+        <tr>
+            <th>Issue ID</th>
+            <th>Charges</th>
+            <th>Decision</th>
+            <th>Appeal</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for charge in charges %}
+        <tr>
+            <td>{{charge.IID}}</td>
+            <td>{{charge.Charges}}</td>
+            <td>{{charge.Decision}}</td>
+            <td>{{charge.Appeal}}</td>
+        </tr>
+        {% endfor %}
+        
+    </tbody>
+</table>
+{% endif %}
+{% endif %}
+
+{% if UserType.contract_based %}
+<h3>Contract Details</h3>
+    <table class="pure-table">
+    <thead>
+        <tr>
+            <th>Field</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+            <td>Contract ID</td>
+            <td>{{contract.CID}}</td>
+        </tr>
+        <tr>
+            <td>Contract</td>
+            <td>{{contract.Contract}}</td>
+        </tr>
+        <tr>
+            <td>Salary</td>
+            <td>Rs. {{contract.Salary}}</td>
+        </tr>
+        <tr>
+            <td>Start Date</td>
+            <td>{{contract.Date_Started}}</td>
+        </tr>
+        <tr>
+            <td>End Date</td>
+            <td>{{contract.End_Date}}</td>
+        </tr>
+        <tr>
+            <td>ULB</td>
+            <td>{{contract.ULB}}</td>
+        </tr>
+
+        
+    </tbody>
+</table>
+
+<h3>Payment History</h3>
+{% if payments %}
+<table class="pure-table">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Account Number</th>
+            <th>IFSC Code</th>
+            <th>Salary</th>
+            <th>Deductions</th>
+            <th>Income Tax</th>
+            <th>Final Salary</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for payment in payments %}
+        <tr>
+            <td>{{payment.Date}}</td>
+            <td>{{payment.Account_No}}</td>
+            <td>{{payment.IFSC}}</td>
+            <td>Rs. {{payment.Salary}}</td>
+            <td>Rs. {{payment.Deductions}}</td>
+            <td>Rs. {{payment.Income_Tax}}</td>
+            <td>Rs. {{payment.Final_Salary}}</td>
+        </tr>
+        {% endfor %}
+
+    </tbody>
+</table>
+{% else %}
+<div class="alert alert-info">
+    <strong>There is no payment history currently</strong>
+  </div>
+{% endif %}
+{% endif %}
+</center>
+
+	{% endblock %}
+
+{% block js %}
+{% endblock %}

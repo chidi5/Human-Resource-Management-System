@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+  {% block title %}
+  Employees
+  {% endblock %}
+
+  {% block style %}
+ 
+  {% endblock %}
+
+  {% block main %}
+  <script type="text/javascript">
+    $(document).ready(function () {
+        $('#checkBtn').click(function() {
+          checked = $("input[type=checkbox]:checked").length;
+
+          if(!checked) {
+            alert("You must check at least one checkbox.");
+            return false;
+          }
+
+        });
+    });
+
+  </script>
+
+  <script>
+    function isNumberKey(evt){
+    var charCode = (evt.which) ? evt.which : event.keyCode
+    if (charCode > 31 && (charCode < 48 || charCode > 57))
+        return false;
+    return true;
+    }
+
+  </script>
+
+  	<h1>Employees</h1>
+    <h3>Add an Employee</h3>
+    <form class="pure-form pure-form-stacked" action="/employees/" method="POST">
+      {% csrf_token %}
+      {% if request_accepted == 1 %}
+        <div class="alert alert-success alert-dismissable">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+        <strong>Employee has been added</strong>
+        </div>
+      {% endif %}
+      {% if request_accepted == 2 %}
+      <div class="alert alert-danger alert-dismissable">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+    <strong>No available positions for the chosen Post</strong>
+  </div>
+      {% endif %}
+      {% if request_accepted == 3 %}
+      <div class="alert alert-danger alert-dismissable">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+    <strong>The account is already allotted to a different User</strong>
+  </div>
+      {% endif %}
+    <div class="pure-u-1-8">
+        <input class="pure-input-1" name="Name" type="text" maxlength="30" placeholder="Name" required>
+    </div>
+    <div class="pure-u-1-8">
+        <select id="state" name="Post" class="pure-input-1">
+            <option>Executive Officer</option>
+            <option>Municipal Engineer</option>
+            <option>Secretary</option>
+            <option>Junior Engineer</option>
+            <option>Accountant</option>
+            <option>Sanitary Inspector</option>
+            <option>Superintendent</option>
+            <option>Assistant</option>
+            <option>Clerk</option>
+            <option>Peon</option>
+        </select>
+    </div>
+
+    <div class="pure-u-1-4">
+        <input class="pure-input-1" name="Address" type="text" maxlength="50" placeholder="Address" required>
+    </div>
+  </br>
+    <div class="pure-u-1-8">
+        <input class="pure-input-1" name="Age" type="number" min="20" max="65" placeholder="Age" required>
+    </div>
+
+    <div class="pure-u-1-8">
+        <select id="state" name="Gender" class="pure-input-1">
+            <option>M</option>
+            <option>F</option>
+        </select>
+    </div>
+    <div class="pure-u-1-8">
+        <input class="pure-input-1" onkeypress="return isNumberKey(event)" name="Aadhar" type="text" minlength="12" maxlength="12" placeholder="Aadhar" required>
+    </div>
+    <div class="pure-u-1-8">
+        <input class="pure-input-1" onkeypress="return isNumberKey(event)" name="Phone" type="text" minlength="10" maxlength="10" placeholder="Phone" required>
+    </div></br>
+    <div class="pure-u-1-4">
+        <input class="pure-input-1" name="Account" onkeypress="return isNumberKey(event)" type="text" maxlength="11" minlength="10" placeholder="Account Number" required>
+    </div>
+    <div class="pure-u-1-4">
+        <input class="pure-input-1" name="IFSC" type="text" maxlength="11" minlength="11" placeholder="IFSC Code" required>
+    </div>
+  </br>
+  </br>
+        <button type="submit" class="pure-button pure-button-primary">Submit</button>
+</form>
+    <h3>Employees' Details</h3>
+    <form action="/employees/" onSubmit="return confirm('Are you sure you wish to delete?');" method="POST">
+    {% csrf_token %}
+  	<table class="pure-table">
+    <thead>
+        <tr>
+            <th>Employee ID</th>
+            <th>Employee Name</th>
+            <th>Post ID</th>
+            <th>Post Name</th>
+            <th>Age</th>
+            <th>Gender</th>
+            <th>Phone Number</th>
+            <th>Remove</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for employee in employees %}
+        <tr>
+            <td>{{employee.EID}}</td>
+            <td>{{employee.Name}}</td>
+            <td>{{employee.PID}}</td>
+            <td>{{employee.Post_Name}}</td>
+            <td>{{employee.Age}}</td>
+            <td>{{employee.Gender}}</td>
+            <td>+91-{{employee.Phone}}</td>
+            <td><center><input id="cb" name="delete" value="{{employee.EID}}" type="checkbox"></center></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<center><button type="submit" id="checkBtn" class="pure-button pure-button-primary">Confirm</button></center>
+</form>
+
+	{% endblock %}
+
+{% block js %}
+{% endblock %}

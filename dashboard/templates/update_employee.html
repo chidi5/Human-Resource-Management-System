@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+  {% block title %}
+  Update Employee
+  {% endblock %}
+
+  {% block style %}
+  
+  {% endblock %}
+
+  {% block main %}
+  <script>
+    function isNumberKey(evt){
+    var charCode = (evt.which) ? evt.which : event.keyCode
+    if (charCode > 31 && (charCode < 48 || charCode > 57))
+        return false;
+    return true;
+    }
+
+  </script>
+  <h1>Update Employee</h1>
+
+    <form class="pure-form pure-form-stacked" id="promote" action="/update_employee/" method="POST">
+      {% csrf_token %}
+
+    {% if request_accepted %}
+      <div class="alert alert-success alert-dismissable fade in" style="width: 400px;">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>The employee has been updated</strong>
+        </div>
+    {% endif %}
+      
+    <div class="pure-u-1-8">
+      <label>Employee ID</label>
+        <select id="state" name="EID" onchange="this.form.submit()" class="pure-input-1" required>
+          {% if eid %}
+          <option selected="selected">{{eid}}</option>
+          {% else %}
+          <option style="display: none;" selected="selected">Select Employee ID</option>
+            {% for EID in EIDs %}
+            <option>{{EID}}</option>
+            {% endfor %}
+          {% endif %}
+        </select>
+    </div>
+  </form>
+    
+    <h3>Add Dependent</h3>
+    <form class="pure-form pure-form-stacked" id="promote" action="/update_employee/" method="POST">
+      {% csrf_token %}
+    <div class="pure-u-1-8">
+        <input class="pure-input-1" name="Dependent_Name" type="text" maxlength="30" placeholder="Dependent Name" {% if eid %} required {% else %} disabled {% endif %}>
+    </div>
+    <div class="pure-u-1-4">
+        <input class="pure-input-1" name="Dependent_Address" type="text" maxlength="50" placeholder="Dependent Address" {% if eid %} required {% else %} disabled {% endif %}>
+    </div>
+  </br>
+    <div class="pure-u-1-8">
+        <input class="pure-input-1" name="Dependent_Age" type="number" min="1" max="100" placeholder="Dependent Age" {% if eid %} required {% else %} disabled {% endif %}>
+    </div>
+
+    <div class="pure-u-1-8">
+        <select id="state" name="Dependent_Gender" class="pure-input-1" {% if eid %} required {% else %} disabled {% endif %}>
+            <option>M</option>
+            <option>F</option>
+        </select>
+    </div>
+    <div class="pure-u-1-8">
+        <input class="pure-input-1" onkeypress="return isNumberKey(event)" name="Dependent_Aadhar" type="text" minlength="12" maxlength="12" placeholder="Aadhar" {% if eid %} required {% else %} disabled {% endif %}>
+    </div>
+    </br>
+    <div class="pure-u-1-8">
+         <select id="state" name="Dependent_Relation" class="pure-input-1" {% if eid %} required {% else %} disabled {% endif %}>
+            <option>Mother</option>
+            <option>Father</option>
+            <option>Brother</option>
+            <option>Sister</option>
+            <option>Cousin</option>
+            <option>Uncle</option>
+            <option>Aunt</option>
+            <option>Grand Parent</option>
+        </select>
+    </div>
+  </br>
+  <input name="eid_dependents" value={{eid}} hidden/>
+  <button type="submit" name="dependent" class="pure-button pure-button-primary">Submit</button>
+</form>
+
+<h3>Add Charges</h3>
+<form class="pure-form pure-form-stacked" id="promote" action="/update_employee/" method="POST">
+      {% csrf_token %}
+<div class="pure-u-1-2">
+        <input class="pure-input-1" name="Charges" type="text" placeholder="Charges" maxlength="100" {% if eid %} required {% else %} disabled {% endif %}>
+</div>
+</br>
+<div class="pure-u-1-2">
+        <input class="pure-input-1" name="Decision" type="text" placeholder="Decision" maxlength="100" {% if eid %} required {% else %} disabled {% endif %}>
+</div>
+</br>
+<div class="pure-u-1-2">
+        <input class="pure-input-1" name="Appeal" type="text" placeholder="Appeal" maxlength="100" {% if eid %} required {% else %} disabled {% endif %}>
+</div>
+<input name="eid_charges" value={{eid}} hidden/>
+</br>
+<button type="submit" name="charges" class="pure-button pure-button-primary">Submit</button>
+</form>
+  {% endblock %}
+
+{% block js %}
+<script>
+var today = new Date().toISOString().split('T')[0];
+document.getElementsByName("Joining_Date")[0].setAttribute('min', today);
+document.getElementsByName("Joining_Date_Demote")[0].setAttribute('min', today);
+</script>
+{% endblock %}

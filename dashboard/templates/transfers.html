@@ -1,0 +1,256 @@
+{% extends 'base.html' %}
+
+  {% block title %}
+  Transfer Record
+  {% endblock %}
+
+  {% block style %}
+ 	
+  {% endblock %}
+
+  {% block main %}
+  <h1>Transfer Record</h1>
+
+  <h3>Past Transfers</h3>
+  {% if transfers %}
+  <table class="pure-table">
+    <thead>
+        <tr>
+            <th>Relieving Date</th>
+            <th>Joining Date</th>
+            <th>Previous Post</th>
+            <th>Previous ULB</th>
+            <th>New Post</th>
+            <th>New ULB</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for transfer in transfers %}
+        <tr>
+            <td>{{transfer.relieving_date}}</td>
+            <td>{{transfer.joining_date}}</td>
+            <td>{{transfer.init_post}}</td>
+            <td>{{transfer.init_ulb}}</td>
+            <td>{{transfer.final_post}}</td>
+            <td>{{transfer.final_ulb}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+	</table>
+{% else %}
+	<div class="alert alert-info">
+  	<strong>There is no transfer record currently.</strong>
+	</div>
+{% endif %}
+
+{% if demotions %}
+<h3>Past Demotions</h3>
+  <table class="pure-table">
+    <thead>
+        <tr>
+            <th>Relieving Date</th>
+            <th>Joining Date</th>
+            <th>Charge ID</th>
+            <th>Previous Post</th>
+            <th>Previous ULB</th>
+            <th>New Post</th>
+            <th>New ULB</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for demotion in demotions %}
+        <tr>
+            <td>{{demotion.relieving_date}}</td>
+            <td>{{demotion.joining_date}}</td>
+            <td>{{demotion.IID}}</td>
+            <td>{{demotion.final_post}}</td>
+            <td>{{demotion.final_ulb}}</td>
+            <td>{{demotion.init_post}}</td>
+            <td>{{demotion.init_ulb}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+	</table>
+{% endif %}
+
+{% if UserType.head_of_head %}
+  {% if promote_eid %}
+  	<script type="text/javascript">
+    $(document).ready(function(){
+		$("#demote :input").prop("disabled", true);
+    });
+	</script>
+  {% elif demote_eid %}
+  <script type="text/javascript">
+    $(document).ready(function(){
+		$("#promote :input").prop("disabled", true);
+    });
+	</script>
+  {% endif %}
+
+  	<h3>Make a Transfer</h3>
+  	<form class="pure-form pure-form-stacked" id="promote" action="/transfers/" method="POST">
+      {% csrf_token %}
+
+    {% if transfer_made %}
+    	<div class="alert alert-success alert-dismissable fade in" style="width: 400px;">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>The transfer has been made</strong>
+        </div>
+    {% endif %}
+      
+    <div class="pure-u-1-8">
+    	<label>Employee ID</label>
+        <select id="state" name="promote_EID" onchange="this.form.submit()" class="pure-input-1" required>
+        	{% if promote_eid %}
+        	<option selected="selected">{{promote_eid}}</option>
+        	{% else %}
+        	<option style="display: none;" selected="selected">Select Employee ID</option>
+            {% for EID in EIDs %}
+            <option>{{EID}}</option>
+            {% endfor %}
+            {% endif %}
+        </select>
+    </div>
+    <div class="pure-u-1-8">
+    	<label>Employee Name</label>
+        <input class="pure-input-1" name="Name" type="text" placeholder="Employee Name" value="{{Promote_Name}}" readonly>
+    </div>
+    <div class="pure-u-1-8">
+    	<label>Previous ULB</label>
+        <input class="pure-input-1" name="Init_ULB" type="text" placeholder="Previous Office" value="{{Promote_ULB}}" readonly>
+    </div>
+    <div class="pure-u-1-8">
+    	<label>Previous Post</label>
+        <input class="pure-input-1" name="Init_Post" type="text" placeholder="Previous Post" value="{{Promote_Init_Post}}" readonly>
+    </div>
+  </br>
+
+    <div class="pure-u-1-4">
+    	<label>New ULB</label>
+        <select id="state" name="Final_ULB" onchange="this.form.submit()" class="pure-input-1" {% if promote_eid %} required {% else %} disabled  {% endif %}>
+        	{% if promote_uid %}
+        	<option selected="selected">{{promote_uid}}</option>
+        	{% else %}
+        	<option style="display: none;">Select New Office</option>
+            {% for promote_ulb in promote_ulbs %}
+            	<option>{{promote_ulb}}</option>
+            {% endfor %}
+            {% endif %}
+        </select>
+    </div>
+    <div class="pure-u-1-8">
+    	<label>New Post</label>
+        <select id="state" name="Final_Post" class="pure-input-1" {% if promote_uid %} required {% else %} disabled  {% endif %}>
+        	<option style="display: none;" disabled>Select New Post</option>
+            {% for post in promote_posts %}
+            <option>{{post}}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="pure-u-1-8">
+    	<label>Joining Date</label>
+        <input class="pure-input-1" id="Joining_Date" name="Joining_Date" type="date" placeholder="Joining Date" {% if promote_uid %} required {% else %} disabled {% endif %}>
+    </div>
+  </br>
+        <button type="submit" name="promote_submit" value="Submitted" class="pure-button pure-button-primary" {% if not promote_uid %} disabled {% endif %}>Submit</button>
+</form>
+
+<h3>Demote an Employee</h3>
+  	<form class="pure-form pure-form-stacked" id="demote" action="/transfers/" method="POST">
+      {% csrf_token %}
+
+    {% if demotion_done %}
+    	<div class="alert alert-success alert-dismissable fade in" style="width: 400px;">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>The employee has been demoted</strong>
+        </div>
+    {% endif %}
+      
+    <div class="pure-u-1-8">
+    	<label>Employee ID</label>
+        <select id="state" name="demote_EID" onchange="this.form.submit()" class="pure-input-1" required>
+        	{% if demote_eid %}
+        	<option selected="selected">{{demote_eid}}</option>
+        	{% else %}
+        	<option style="display: none;" selected="selected">Select Employee ID</option>
+            {% for EID in EIDs %}
+            <option>{{EID}}</option>
+            {% endfor %}
+            {% endif %}
+        </select>
+    </div>
+    <div class="pure-u-1-8">
+    	<label>Employee Name</label>
+        <input class="pure-input-1" name="Name" type="text" placeholder="Employee Name" value="{{Demote_Name}}" readonly>
+    </div>
+    <div class="pure-u-1-8">
+    	<label>Previous ULB</label>
+        <input class="pure-input-1" name="Init_ULB" type="text" placeholder="Previous Office" value="{{Demote_ULB}}" readonly>
+    </div>
+    <div class="pure-u-1-8">
+    	<label>Previous Post</label>
+        <input class="pure-input-1" name="Init_Post" type="text" placeholder="Previous Post" value="{{Demote_Init_Post}}" readonly>
+    </div>
+  </br>
+  	<div class="pure-u-1-6">
+    	<label>Charge ID</label>
+        <select id="state" name="Charge_ID" onchange="this.form.submit()" class="pure-input-1" {% if demote_eid %} required {% else %} disabled  {% endif %}>
+        	{% if charge_id %}
+        	<option selected="selected">{{charge_id}}</option>
+        	{% else %}
+        	<option style="display: none;" selected="selected">Select Charge ID</option>
+            {% for demote_cid in demote_cids %}
+            	<option>{{demote_cid}}</option>
+            {% endfor %}
+            {% endif %}
+        </select>
+    </div>
+    <div class="pure-u-1-3">
+    	<label>Charge</label>
+        <input class="pure-input-1" name="Charge" type="text" placeholder="Charge" value="{{Charge}}" readonly>
+    </div>
+	</br>
+    <div class="pure-u-1-4">
+    	<label>New ULB</label>
+        <select id="state" name="Final_ULB" onchange="this.form.submit()" class="pure-input-1" {% if charge_id %} required {% else %} disabled  {% endif %}>
+        	{% if demote_uid %}
+        	<option selected="selected">{{demote_uid}}</option>
+        	{% else %}
+        	<option style="display: none;" selected="selected">Select New Office</option>
+            {% for demote_ulb in demote_ulbs %}
+            	<option>{{demote_ulb}}</option>
+            {% endfor %}
+            {% endif %}
+        </select>
+    </div>
+    <div class="pure-u-1-8">
+    	<label>New Post</label>
+        <select id="state" name="Final_Post" class="pure-input-1" {% if demote_uid %} required {% else %} disabled  {% endif %}>
+        	<option style="display: none;" disabled>Select New Post</option>
+            {% for post in demote_posts %}
+            <option>{{post}}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="pure-u-1-8">
+    	<label>Joining Date</label>
+        <input class="pure-input-1" id="Joining_Date" name="Joining_Date_Demote" type="date" placeholder="Joining Date" {% if demote_uid %} required {% else %} disabled {% endif %}>
+    </div>
+  </br>
+        <button type="submit" name="demote_submit" value="Submitted" class="pure-button pure-button-primary" {% if not demote_uid %} disabled {% endif %}>Submit</button>
+</form>
+
+{% endif %}
+	{% endblock %}
+}
+
+{% block js %}
+<script>
+var today = new Date().toISOString().split('T')[0];
+document.getElementsByName("Joining_Date")[0].setAttribute('min', today);
+document.getElementsByName("Joining_Date_Demote")[0].setAttribute('min', today);
+</script>
+{% endblock %}

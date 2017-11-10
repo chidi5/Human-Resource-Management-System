@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+    {% block title %}
+    {% endblock %}
+    </title>
+  
+    {% load static %}
+    
+    <link rel="stylesheet" href="{% static 'css/side-menu.css' %}"/>
+	{% block style %}
+    {% endblock %}
+
+	<link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  <style>
+    #hiddenRadio {
+      display: none;
+    }
+  </style>
+
+  </head>
+  
+  <body>
+    <nav class="navbar navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <li><a class="navbar-brand" href="#">&emsp; &emsp; &emsp; Urban Local Bodies</a>
+    </div>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="/home/"><span class="glyphicon glyphicon-user"></span> {{Name}}</a></li>
+      <li><a href="/logout/"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+    </ul>
+  </div>
+</nav>
+
+  	<ul class="navigation">
+     <li class="nav-item"><a href="/home">Home</a></li>
+     {% if UserType.ULB_admin %}
+     <li class="nav-item"><a href="/employees">Employees' Details</a></li>
+     <li class="nav-item"><a href="/update_employee">Update Employee</a></li>
+     {% endif %}
+     {% if UserType.ULB_Accountant %}
+     <li class="nav-item"><a href="/make_payment">Payment</a></li>
+     {% endif %}
+     {% if UserType.regularised %}
+     <li class="nav-item"><a href="/payment">Payment History</a></li>
+     {% endif %}
+     <li class="nav-item"><a href="/leave">Leave Record</a></li>
+     {% if UserType.head_of_ULB %}
+     <li class="nav-item"><a href="/contracts">Contract Details</a></li>
+     {% endif %}
+     {% if UserType.regularised %}
+     <li class="nav-item"><a href="/loan">Loan Details</a></li>
+     {% endif %}
+     <li class="nav-item"><a href="/orders">Orders</a></li>
+     {% if UserType.regularised %}
+     <li class="nav-item"><a href="/transfers">Transfer Record</a></li>
+     {% endif %}
+	</ul>
+  
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger"></label>
+
+<div class="site-wrap">
+  <center>
+  {% block main %}
+
+  {% endblock %}
+
+</br>
+</br>
+</br>
+</br>
+</center>
+
+</div>
+  </body>
+</html>
+
+{% block js %}
+{% endblock %}

@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+  {% block title %}
+  Loan Details
+  {% endblock %}
+
+  {% block style %}
+ 
+  {% endblock %}
+
+  {% block main %}
+    <script type="text/javascript">
+    $(document).ready(function () {
+    $('#checkBtn').click(function() {
+      checked = $("input[type=radio]:checked").length;
+
+      if(!checked) {
+        alert("You must check at least one checkbox.");
+        return false;
+      }
+
+    });
+  });
+  </script>
+
+
+  	<h1>Loan Details</h1>
+  	<h3>Loan Records</h3>
+    {% if loans %}
+  	<table class="pure-table">
+    <thead>
+        <tr>
+            <th>Loan ID</th>
+            <th>Amount</th>
+            <th>Date</th>
+            <th>Duration</th>
+            <th>Type</th>
+            <th>Paid</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for loan in loans %}
+        <tr>
+            <td>{{loan.LID}}</td>
+            <td>Rs. {{loan.Amount}}</td>
+            <td>{{loan.Date}}</td>
+            <td>{{loan.Duration}}</td>
+            <td>{{loan.Type}}</td>
+            <td>Rs. {{loan.Paid}}</td>
+            <td>{{loan.Status}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+  <div class="alert alert-info">
+    <strong>There are no approved Loan Requests</strong>
+  </div>
+{% endif %}
+  	<h3>Apply for Loan</h3>
+  	<form class="pure-form pure-form-stacked" action="/loan/" method="POST">
+      {% csrf_token %}
+    <fieldset>
+        {% if request_accepted == 1 %}
+          <div class="alert alert-success alert-dismissable fade in" style="width: 400px;">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>Your request has been submitted.</strong>
+          </div>
+        {% elif request_accepted == 2 %}
+        <div class="alert alert-danger alert-dismissable" style="width: 400px;">
+          <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+        <strong>You already have an unpaid loan request</strong>
+        </div>
+        {% endif %}
+        <div class="pure-g">
+            <div class="pure-u-1 pure-u-md-1-3">
+                <label for="amount">Amount (in Rs.)</label>
+                <input id="amount" name="amount" type="number" min="0" max="10000000" step="1000" required>
+            </div>
+
+            <div class="pure-u-1 pure-u-md-1-3">
+                <label for="duration">Duration (in years)</label>
+                <input id="duration" name="duration" type="number" min="1" max="25" step="1" required>
+            </div>
+
+            <div class="pure-u-1 pure-u-md-1-3">
+                <label for="type">Type</label>
+                <select id="type" name="type">
+                    <option>Marriage</option>
+                    <option>Festival</option>
+                    <option>House</option>
+                    <option>Vehicle</option>
+                </select>
+            </div>
+        </div>
+    </br>
+
+        <button type="submit" class="pure-button pure-button-primary">Submit</button>
+    </fieldset>
+</form>
+
+{% if UserType.head_of_head %}
+  <h3>Loan Requests</h3>
+  {% if employee_loans %}
+  <form action="/loan/" method="POST">
+    {% csrf_token %}
+    <table class="pure-table">
+    <thead>
+        <tr>
+            <th>Loan ID</th>
+            <th>Employee ID</th>
+            <th>Employee Name</th>
+            <th>PID</th>
+            <th>UID</th>
+            <th>Amount</th>
+            <th>Date</th>
+            <th>Duration</th>
+            <th>Type</th>
+            <th>Approve</th>
+            <th>Reject</th>
+        </tr>
+    </thead>
+
+    <tbody>
+      {% for loan in employee_loans %}
+        <tr>
+            <td>{{loan.LID}}</td>
+            <td>{{loan.EID}}</td>
+            <td>{{loan.E_Name}}</td>
+            <td>{{loan.PID}}</td>
+            <td>{{loan.UID}}</td>
+            <td>Rs. {{loan.Amount}}</td>
+            <td>{{loan.Date}}</td>
+            <td>{{loan.Duration}}</td>
+            <td>{{loan.Type}}</td>
+            <td><center><input name="{{forloop.counter}}" value="{{loan.LID}}" type="radio"></center></td>
+            <td><center><input name="{{forloop.counter}}" value="-{{loan.LID}}" type="radio"></center></td>
+        </tr>
+        <input id = "hiddenRadio" name="{{forloop.counter}}" value="0" type="radio" checked="checked"/>
+      {% endfor %}
+    </tbody>
+    </table>
+    <center><button type="submit" id="checkBtn" name="submit" class="pure-button pure-button-primary">Confirm</button></center>
+  </form>
+  {% else %}
+   <div class="alert alert-info">
+  <strong>There are no loan requests currently.</strong>
+  </div>
+  {% endif %}
+  {% endif %}
+	{% endblock %}
+
+{% block js %}
+{% endblock %}

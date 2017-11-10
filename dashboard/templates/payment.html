@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+  {% block title %}
+  Payment History
+  {% endblock %}
+
+  {% block style %}
+ 
+  {% endblock %}
+
+  {% block main %}
+  	<h1>Payment History</h1>
+    <form class="pure-form" method="GET" action="/payment/">
+    <fieldset>
+        <label for="date">
+          Go To:
+        <input id="txtDate" type="date" name="date" placeholder="YYYY-MM-DD" required>
+      </label>
+
+        <button type="submit" class="pure-button pure-button-primary">Go</button>
+    </fieldset>
+</form>
+    <h3>Latest Payment</h3>
+    {% if payment %}
+  	<table class="pure-table">
+    <thead>
+        <tr>
+            <th>Field</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        <tr>
+            <td>Date</td>
+            <td>{{payment.Date}}</td>
+        </tr>
+        <tr>
+            <td>Account No.</td>
+            <td>{{payment.Account_No}}</td>
+        </tr>
+        <tr>
+            <td>Base Pay</td>
+            <td>{{payment.Base_Pay}}</td>
+        </tr>
+        <tr>
+            <td>Grade Pay</td>
+            <td>{{payment.Grade_Pay}}</td>
+        </tr>
+        <tr>
+            <td>Dearness Allowance</td>
+            <td>{{payment.DA}}</td>
+        </tr>
+        <tr>
+            <td>House Rent Allowance</td>
+            <td>{{payment.House_Rent_Allowance}}</td>
+        </tr>
+        <tr>
+            <td>Medical Allowance</td>
+            <td>{{payment.Medical_Allowance}}</td>
+        </tr>
+        <tr>
+            <td>Income Tax</td>
+            <td>-{{payment.Income_Tax}}</td>
+        </tr>
+        <tr>
+            <td>Loan Recovery</td>
+            <td>-{{payment.Loan_Recovery}}</td>
+        </tr>
+        <tr>
+            <td>Provident Fund</td>
+            <td>-{{payment.Provident_Fund}}</td>
+        </tr>
+        <tr>
+            <td>GIS</td>
+            <td>-{{payment.GIS}}</td>
+        </tr>
+        <tr>
+          <td>Other Deductions</td>
+          <td>-{{payment.Deductions}}</td>
+        <tr>
+            <td>Final Salary</td>
+            <td>{{payment.Final_Salary}}</td>
+        </tr>
+
+    </tbody>
+</table>
+  {% else %}
+    <div class="alert alert-info">
+    <strong>There is no payment history for the given date</strong>
+  </div>
+  {% endif %}
+	{% endblock %}
+
+{% block js %}
+<script>
+$(function(){
+    var dtToday = new Date();
+    
+    var month = dtToday.getMonth() + 1;
+    var day = dtToday.getDate();
+    var year = dtToday.getFullYear();
+    if(month < 10)
+        month = '0' + month.toString();
+    if(day < 10)
+        day = '0' + day.toString();
+    
+    var maxDate = year + '-' + month + '-' + day;
+    $('#txtDate').attr('max', maxDate);
+});
+</script>
+{% endblock %}
